@@ -8,6 +8,7 @@ import { Award, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const IssueCertificate = () => {
   const { toast } = useToast();
@@ -32,7 +33,11 @@ const IssueCertificate = () => {
     };
 
     try {
-      const response = await axios.post('http://localhost:5000/api/certificates', certificateData);
+      const response = await axios.post(
+        `${API_BASE_URL}/api/certificates`,
+        certificateData
+      );
+      
       
       toast({
         title: "Certificate Issued Successfully!",

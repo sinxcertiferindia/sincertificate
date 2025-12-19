@@ -4,7 +4,7 @@ const cors = require("cors");
 const serverless = require("serverless-http");
 require("dotenv").config();
 
-const certificateRoutes = require("../../backend/routes/certificateRoutes");
+const certificateRoutes = require("./routes/certificateRoutes");
 
 const app = express();
 app.use(cors());
