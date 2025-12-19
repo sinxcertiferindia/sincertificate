@@ -36,4 +36,6 @@ app.get("/", (req, res) => {
   res.send("API running on Netlify");
 });
 
-module.exports.handler = serverless(app);
+module.exports.handler = serverless(app, {
+  basePath: "/.netlify/functions/api",
+});
