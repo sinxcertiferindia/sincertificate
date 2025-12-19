@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -24,7 +25,7 @@ const AdminCourses = () => {
   const fetchCertificates = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get("http://localhost:5000/api/certificates");
+      const { data } = await axios.get(`${API_BASE_URL}/api/certificates`);
       setCertificates(data);
       setError(null);
     } catch (err: any) {

@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import Papa from "papaparse";
 import axios from "axios";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const BulkUpload = () => {
   const { toast } = useToast();
@@ -226,7 +227,7 @@ const BulkUpload = () => {
           }
 
           try {
-            const response = await axios.post('http://localhost:5000/api/certificates/bulk', validCertificates);
+            const response = await axios.post(`${API_BASE_URL}/api/certificates/bulk`, validCertificates);
             toast({
               title: "Bulk Upload Successful!",
               description: `${response.data.length} certificates have been issued.`,

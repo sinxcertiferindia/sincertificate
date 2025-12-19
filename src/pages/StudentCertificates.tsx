@@ -1,5 +1,6 @@
 import { FormEvent, useMemo, useState } from "react";
 import axios from "axios";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -45,7 +46,7 @@ const StudentCertificates = () => {
       if (email) params.append("email", email.trim());
       if (course) params.append("course", course.trim());
 
-      const { data } = await axios.get<CertificateRecord[]>(`http://localhost:5000/api/certificates/search?${params.toString()}`);
+      const { data } = await axios.get<CertificateRecord[]>(`${API_BASE_URL}/api/certificates/search?${params.toString()}`);
       setResults(data);
 
       if (data.length === 0) {

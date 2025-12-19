@@ -21,7 +21,7 @@ const IssueCertificate = () => {
   const [issueDate, setIssueDate] = useState("");
   const [expirationDate, setExpirationDate] = useState("");
   const [additionalInfo, setAdditionalInfo] = useState("");
- 
+  
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

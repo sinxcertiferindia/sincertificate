@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 import { clearAdminSession } from "@/lib/admin-auth";
 
 const AdminDashboard = () => {
@@ -63,8 +64,8 @@ const AdminDashboard = () => {
     try {
       setLoading(true);
       const [statsResponse, certificatesResponse] = await Promise.all([
-        axios.get('http://localhost:5000/api/certificates/stats'),
-        axios.get('http://localhost:5000/api/certificates'),
+        axios.get(`${API_BASE_URL}/api/certificates/stats`),
+        axios.get(`${API_BASE_URL}/api/certificates`),
       ]);
 
       // Update stats

@@ -6,6 +6,7 @@ import { Link, useParams } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import html2canvas from "html2canvas";
 import axios from "axios";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 import sinLogo from "../../Assests/SIN.png";
 import accreditationOne from "../../Assests/logo1.png";
 import accreditationTwo from "../../Assests/logo2.png";
@@ -57,7 +58,7 @@ const CertificateViewer = () => {
   const fetchCertificate = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:5000/api/certificates/${id}`);
+      const response = await axios.get(`${API_BASE_URL}/api/certificates/${id}`);
       setCertificate(response.data);
     } catch (error: any) {
       console.error('Error fetching certificate:', error);

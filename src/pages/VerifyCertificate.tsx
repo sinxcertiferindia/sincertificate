@@ -6,6 +6,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Shield, Search, CheckCircle2, XCircle, Award, Calendar, Building2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const VerifyCertificate = () => {
   const [certId, setCertId] = useState("");
@@ -17,7 +18,7 @@ const VerifyCertificate = () => {
     setVerificationResult(null);
 
     try {
-      const response = await axios.get(`http://localhost:5000/api/certificates/${certId}`);
+      const response = await axios.get(`${API_BASE_URL}/api/certificates/${certId}`);
       const certificate = response.data;
 
       setVerificationResult({
