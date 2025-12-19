@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const certificateSchema = mongoose.Schema(
+const certificateSchema = new mongoose.Schema(
   {
     certificateId: {
       type: String,
@@ -38,8 +38,8 @@ const certificateSchema = mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['active', 'revoked'],
-      default: 'active',
+      enum: ["active", "revoked"],
+      default: "active",
     },
     views: {
       type: Number,
@@ -49,6 +49,7 @@ const certificateSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-const Certificate = mongoose.model('Certificate', certificateSchema);
-
-module.exports = Certificate;
+// 🔐 Important for serverless (prevents model overwrite error)
+module.exports =
+  mongoose.models.Certificate ||
+  mongoose.model("Certificate", certificateSchema);
