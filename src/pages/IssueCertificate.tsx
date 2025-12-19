@@ -35,13 +35,18 @@ const IssueCertificate = () => {
     try {
       const response = await axios.post(
         `${API_BASE_URL}/api/certificates`,
-        certificateData
+        certificateData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
       
       
       toast({
         title: "Certificate Issued Successfully!",
-        description: `Certificate ${response.data.certificateId} has been created and saved.`,
+        description: `Certificate ${response.data.certificate.certificateId} has been created and saved.`,
       });
       
       // Reset form
