@@ -13,23 +13,29 @@ const API_BASE_URL = import.meta.env.VITE_API_URL;
 const IssueCertificate = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [recipientName, setRecipientName] = useState("");
+  const [recipientEmail, setRecipientEmail] = useState("");
+  const [courseName, setCourseName] = useState("");
+  const [batchName, setBatchName] = useState("");
+  const [organizationName, setOrganizationName] = useState("");
+  const [issueDate, setIssueDate] = useState("");
+  const [expirationDate, setExpirationDate] = useState("");
+  const [additionalInfo, setAdditionalInfo] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-    
+
     const certificateData = {
-      recipientName: formData.get('recipientName') as string,
-      recipientEmail: formData.get('recipientEmail') as string,
-      courseName: formData.get('courseName') as string,
-      batchName: formData.get('batchName') as string || undefined,
-      organizationName: formData.get('organizationName') as string,
-      issueDate: formData.get('issueDate') as string,
-      expirationDate: formData.get('expirationDate') as string || undefined,
-      additionalInfo: formData.get('additionalInfo') as string || undefined,
+      recipientName,
+      recipientEmail,
+      courseName,
+      batchName: batchName || undefined,
+      organizationName,
+      issueDate,
+      expirationDate: expirationDate || undefined,
+      additionalInfo: additionalInfo || undefined,
     };
 
     try {
@@ -42,34 +48,28 @@ const IssueCertificate = () => {
           },
         }
       );
-      
-      
+
       toast({
         title: "Certificate Issued Successfully!",
         description: `Certificate ${response.data.certificate.certificateId} has been created and saved.`,
       });
-      
+
       // Reset form
-      form.reset();
-      
-      // Optionally navigate back to admin page
-      // navigate('/admin');
+      setRecipientName("");
+      setRecipientEmail("");
+      setCourseName("");
+      setBatchName("");
+      setOrganizationName("");
+      setIssueDate("");
+      setExpirationDate("");
+      setAdditionalInfo("");
+
     } catch (error: any) {
-      console.error('Error creating certificate:', error);
-      
-      let errorMessage = "An error occurred while creating the certificate.";
-      
-      if (error.response) {
-        // Server responded with error status
-        errorMessage = error.response.data?.message || `Server error: ${error.response.status}`;
-      } else if (error.request) {
-        // Request was made but no response received
-        errorMessage = "Unable to connect to the server. Please make sure the backend server is running on port 5000.";
-      } else {
-        // Something else happened
-        errorMessage = error.message || errorMessage;
-      }
-      
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Server error";
+
       toast({
         title: "Certificate Creation Failed",
         description: errorMessage,
@@ -79,6 +79,7 @@ const IssueCertificate = () => {
       setIsSubmitting(false);
     }
   };
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -118,6 +119,8 @@ const IssueCertificate = () => {
                   <Input
                     id="recipientName"
                     name="recipientName"
+                    value={recipientName}
+        onChange={(e) => setRecipientName(e.target.value)}
                     placeholder="John Doe"
                     required
                   />
@@ -128,6 +131,9 @@ const IssueCertificate = () => {
                   <Input
                     id="recipientEmail"
                     name="recipientEmail"
+                    value={recipientEmail}
+        onChange={(e) => setRecipientEmail(e.target.value)}
+
                     type="email"
                     placeholder="john@example.com"
                     required
@@ -140,6 +146,8 @@ const IssueCertificate = () => {
                 <Input
                   id="courseName"
                   name="courseName"
+                  value={courseName}
+                  onChange={(e) => setCourseName(e.target.value)}
                   placeholder="MERN Stack Development Bootcamp"
                   required
                 />
@@ -152,6 +160,8 @@ const IssueCertificate = () => {
                     id="batchName"
                     name="batchName"
                     placeholder="Batch 2025-A"
+                    value={batchName}
+                    onChange={(e) => setBatchName(e.target.value)}
                   />
                 </div>
 
@@ -161,6 +171,8 @@ const IssueCertificate = () => {
                     id="issueDate"
                     name="issueDate"
                     type="date"
+                    value={issueDate}
+                    onChange={(e) => setIssueDate(e.target.value)}
                     required
                   />
                 </div>
@@ -172,6 +184,8 @@ const IssueCertificate = () => {
                   id="expirationDate"
                   name="expirationDate"
                   type="date"
+                  value={expirationDate}
+                  onChange={(e) => setExpirationDate(e.target.value)}
                 />
               </div>
 
@@ -181,6 +195,8 @@ const IssueCertificate = () => {
                   id="organizationName"
                   name="organizationName"
                   placeholder="Tech Academy"
+                  value={organizationName}
+        onChange={(e) => setOrganizationName(e.target.value)}
                   required
                 />
               </div>
@@ -192,6 +208,8 @@ const IssueCertificate = () => {
                   name="additionalInfo"
                   placeholder="Any additional notes or special recognitions..."
                   rows={4}
+                  value={additionalInfo}
+                  onChange={(e) => setAdditionalInfo(e.target.value)}
                 />
               </div>
 
