@@ -32,15 +32,8 @@ connectDB().then(() => console.log("MongoDB connected"));
 
 app.use("/api/certificates", certificateRoutes);
 
-app.get(["/", "/.netlify/functions/api"], (req, res) => {
+app.get("/", (req, res) => {
   res.send("API running on Netlify");
-});
-
-app.get("*", (req, res) => {
-  res.json({
-    message: "Netlify API working",
-    path: req.path,
-  });
 });
 
 module.exports.handler = serverless(app);
