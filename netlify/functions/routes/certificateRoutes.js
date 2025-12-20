@@ -115,6 +115,42 @@ router.get("/", async (req, res) => {
 });
 
 /**
+ * @route   GET /api/certificates/search
+ * @desc    Search certificates by name, email, or course
+ */
+router.get("/search", async (req, res) => {
+  try {
+    const { name, email, course } = req.query;
+
+    if (!name && !email && !course) {
+      return res.status(400).json({
+        message: "At least one search parameter (name, email, or course) is required",
+      });
+    }
+
+    const query = {};
+    if (name) {
+      query.recipientName = { $regex: name, $options: "i" };
+    }
+    if (email) {
+      query.recipientEmail = { $regex: email, $options: "i" };
+    }
+    if (course) {
+      query.courseName = { $regex: course, $options: "i" };
+    }
+
+    const certificates = await Certificate.find(query).sort({ createdAt: -1 });
+
+    res.json(certificates);
+  } catch (error) {
+    console.error("Search certificates error:", error);
+    res.status(500).json({
+      message: "Server error while searching certificates",
+    });
+  }
+});
+
+/**
  * @route   GET /api/certificates/:id
  * @desc    Get single certificate by ID
  */
@@ -234,42 +270,6 @@ router.post("/bulk", async (req, res) => {
     console.error("Bulk create certificates error:", error);
     res.status(500).json({
       message: "Server error while creating certificates",
-    });
-  }
-});
-
-/**
- * @route   GET /api/certificates/search
- * @desc    Search certificates by name, email, or course
- */
-router.get("/search", async (req, res) => {
-  try {
-    const { name, email, course } = req.query;
-
-    if (!name && !email && !course) {
-      return res.status(400).json({
-        message: "At least one search parameter (name, email, or course) is required",
-      });
-    }
-
-    const query = {};
-    if (name) {
-      query.recipientName = { $regex: name, $options: "i" };
-    }
-    if (email) {
-      query.recipientEmail = { $regex: email, $options: "i" };
-    }
-    if (course) {
-      query.courseName = { $regex: course, $options: "i" };
-    }
-
-    const certificates = await Certificate.find(query).sort({ createdAt: -1 });
-
-    res.json(certificates);
-  } catch (error) {
-    console.error("Search certificates error:", error);
-    res.status(500).json({
-      message: "Server error while searching certificates",
     });
   }
 });
