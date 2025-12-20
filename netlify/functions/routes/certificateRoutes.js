@@ -114,4 +114,164 @@ router.get("/", async (req, res) => {
   }
 });
 
+/**
+ * @route   GET /api/certificates/:id
+ * @desc    Get single certificate by ID
+ */
+router.get("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const certificate = await Certificate.findOne({ certificateId: id });
+
+    if (!certificate) {
+      return res.status(404).json({
+        message: "Certificate not found",
+      });
+    }
+
+    // Increment views count
+    certificate.views = (certificate.views || 0) + 1;
+    await certificate.save();
+
+    res.json(certificate);
+  } catch (error) {
+    console.error("Fetch certificate error:", error);
+    res.status(500).json({
+      message: "Server error while fetching certificate",
+    });
+  }
+});
+
+/**
+ * @route   POST /api/certificates/bulk
+ * @desc    Create multiple certificates
+ */
+router.post("/bulk", async (req, res) => {
+  try {
+    const certificates = req.body;
+
+    if (!Array.isArray(certificates) || certificates.length === 0) {
+      return res.status(400).json({
+        message: "Invalid request. Expected an array of certificates.",
+      });
+    }
+
+    const savedCertificates = [];
+    const errors = [];
+
+    for (let i = 0; i < certificates.length; i++) {
+      const cert = certificates[i];
+      try {
+        // Validate required fields
+        if (
+          !cert.recipientName ||
+          !cert.recipientEmail ||
+          !cert.courseName ||
+          !cert.organizationName ||
+          !cert.issueDate
+        ) {
+          errors.push({
+            index: i,
+            message: `Row ${i + 1}: Missing required fields`,
+          });
+          continue;
+        }
+
+        // Generate certificate ID
+        const certificateId = generateCertificateId(cert.batchName);
+
+        // Check if certificate ID already exists
+        const existing = await Certificate.findOne({ certificateId });
+        if (existing) {
+          errors.push({
+            index: i,
+            message: `Row ${i + 1}: Certificate ID ${certificateId} already exists`,
+          });
+          continue;
+        }
+
+        const certificate = new Certificate({
+          certificateId,
+          recipientName: cert.recipientName,
+          recipientEmail: cert.recipientEmail,
+          courseName: cert.courseName,
+          batchName: cert.batchName || undefined,
+          organizationName: cert.organizationName,
+          issueDate: new Date(cert.issueDate),
+          expirationDate: cert.expirationDate
+            ? new Date(cert.expirationDate)
+            : undefined,
+          additionalInfo: cert.additionalInfo || undefined,
+          status: cert.status || "active",
+          views: 0,
+        });
+
+        const savedCertificate = await certificate.save();
+        savedCertificates.push(savedCertificate);
+      } catch (error) {
+        errors.push({
+          index: i,
+          message: `Row ${i + 1}: ${error.message}`,
+        });
+      }
+    }
+
+    if (savedCertificates.length === 0) {
+      return res.status(400).json({
+        message: "No certificates were created",
+        errors: errors,
+      });
+    }
+
+    res.status(201).json({
+      message: `Successfully created ${savedCertificates.length} certificate(s)`,
+      created: savedCertificates.length,
+      total: certificates.length,
+      certificates: savedCertificates,
+      errors: errors.length > 0 ? errors : undefined,
+    });
+  } catch (error) {
+    console.error("Bulk create certificates error:", error);
+    res.status(500).json({
+      message: "Server error while creating certificates",
+    });
+  }
+});
+
+/**
+ * @route   GET /api/certificates/search
+ * @desc    Search certificates by name, email, or course
+ */
+router.get("/search", async (req, res) => {
+  try {
+    const { name, email, course } = req.query;
+
+    if (!name && !email && !course) {
+      return res.status(400).json({
+        message: "At least one search parameter (name, email, or course) is required",
+      });
+    }
+
+    const query = {};
+    if (name) {
+      query.recipientName = { $regex: name, $options: "i" };
+    }
+    if (email) {
+      query.recipientEmail = { $regex: email, $options: "i" };
+    }
+    if (course) {
+      query.courseName = { $regex: course, $options: "i" };
+    }
+
+    const certificates = await Certificate.find(query).sort({ createdAt: -1 });
+
+    res.json(certificates);
+  } catch (error) {
+    console.error("Search certificates error:", error);
+    res.status(500).json({
+      message: "Server error while searching certificates",
+    });
+  }
+});
+
 module.exports = router;

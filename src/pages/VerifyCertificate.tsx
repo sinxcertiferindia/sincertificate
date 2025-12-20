@@ -27,10 +27,10 @@ const VerifyCertificate = () => {
         recipient: certificate.recipientName,
         course: certificate.courseName,
         issueDate: new Date(certificate.issueDate).toLocaleDateString(),
-        organization: "CertifyHub", // Assuming a default organization name for now
+        organization: certificate.organizationName || "CertifyHub",
         status: certificate.expirationDate && new Date(certificate.expirationDate) < new Date()
           ? "Expired"
-          : "Active",
+          : certificate.status === "revoked" ? "Revoked" : "Active",
       });
     } catch (error: any) {
       if (error.response && error.response.status === 404) {

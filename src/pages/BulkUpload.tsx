@@ -228,9 +228,17 @@ const BulkUpload = () => {
 
           try {
             const response = await axios.post(`${API_BASE_URL}/certificates/bulk`, validCertificates);
+            const createdCount = response.data.created || response.data.certificates?.length || 0;
+            const totalCount = response.data.total || validCertificates.length;
+            
+            let description = `${createdCount} certificate(s) have been issued.`;
+            if (response.data.errors && response.data.errors.length > 0) {
+              description += ` ${response.data.errors.length} certificate(s) failed.`;
+            }
+            
             toast({
               title: "Bulk Upload Successful!",
-              description: `${response.data.length} certificates have been issued.`,
+              description: description,
             });
             setFile(null);
           } catch (error: any) {
