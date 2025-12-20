@@ -9,15 +9,40 @@ const certificateRoutes = require("./routes/certificateRoutes");
 
 const app = express();
 
-// Middleware order is critical: CORS first, then JSON parsing
+// Middleware order is critical: CORS first, then body parsing
 app.use(cors());
-// Configure JSON body parser with explicit options for serverless
-app.use(express.json({ 
-  limit: '10mb',
-  strict: true 
+
+// Use express.raw() to capture raw body for JSON content type
+// This ensures we get the body as Buffer before any parsing
+app.use(express.raw({ 
+  type: 'application/json',
+  limit: '10mb'
 }));
-// Also handle URL-encoded bodies (though we use JSON)
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Custom JSON body parser middleware
+// Parse the raw Buffer body as JSON
+app.use((req, res, next) => {
+  // Only process if content-type is JSON and body exists
+  if (req.is('application/json') && req.body) {
+    try {
+      // Convert Buffer to string and parse JSON
+      const bodyString = Buffer.isBuffer(req.body) 
+        ? req.body.toString('utf8') 
+        : (typeof req.body === 'string' ? req.body : JSON.stringify(req.body));
+      
+      req.body = JSON.parse(bodyString);
+    } catch (e) {
+      console.error('JSON parsing error:', e);
+      console.error('Body type:', typeof req.body);
+      console.error('Body sample:', Buffer.isBuffer(req.body) ? req.body.toString('utf8').substring(0, 100) : req.body);
+      return res.status(400).json({ 
+        message: 'Invalid JSON in request body',
+        error: e.message 
+      });
+    }
+  }
+  next();
+});
 
 let cached = global.mongoose;
 if (!cached) {
@@ -94,4 +119,8 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Internal server error" });
 });
 
-module.exports.handler = serverless(app);
+// Configure serverless-http to handle JSON bodies correctly
+// binary: false ensures body is passed as string (not base64), which express.json can parse
+module.exports.handler = serverless(app, {
+  binary: false
+});
