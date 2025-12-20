@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Shield, Award, CheckCircle2, QrCode, Download, Share2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import mainLogo from "../../Assests/mainlogo.jpeg";
-import sinLogo from "../../Assests/sintech.png";
+import sinLogo from "../../Assests/sintech.PNG?url";
 
 const Home = () => {
   return (
