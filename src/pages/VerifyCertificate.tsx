@@ -18,7 +18,7 @@ const VerifyCertificate = () => {
     setVerificationResult(null);
 
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/certificates/${certId}`);
+      const response = await axios.get(`${API_BASE_URL}/certificates/${certId}`);
       const certificate = response.data;
 
       setVerificationResult({

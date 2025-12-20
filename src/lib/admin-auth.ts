@@ -1,5 +1,5 @@
-const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || "admin@example.com";
-const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || "changeme";
+const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || "Sinceritificate";
+const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || "sinindia123@";
 
 export const ADMIN_AUTH_STORAGE_KEY = "certifyhub_admin_authenticated";
 

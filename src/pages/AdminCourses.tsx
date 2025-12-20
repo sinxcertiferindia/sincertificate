@@ -25,7 +25,7 @@ const AdminCourses = () => {
   const fetchCertificates = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(`${API_BASE_URL}/api/certificates`);
+      const { data } = await axios.get(`${API_BASE_URL}/certificates`);
       setCertificates(data);
       setError(null);
     } catch (err: any) {

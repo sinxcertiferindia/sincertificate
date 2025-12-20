@@ -58,7 +58,7 @@ const CertificateViewer = () => {
   const fetchCertificate = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_BASE_URL}/api/certificates/${id}`);
+      const response = await axios.get(`${API_BASE_URL}/certificates/${id}`);
       setCertificate(response.data);
     } catch (error: any) {
       console.error('Error fetching certificate:', error);

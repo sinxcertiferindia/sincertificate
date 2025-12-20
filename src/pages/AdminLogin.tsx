@@ -8,7 +8,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Lock, ShieldCheck } from "lucide-react";
 import {
   clearAdminSession,
-  getConfiguredAdminCredentials,
   isAdminAuthenticated,
   setAdminAuthenticated,
   validateAdminCredentials,
@@ -42,7 +41,7 @@ const AdminLogin = () => {
 
     try {
       if (!email || !password) {
-        setError("Please enter both email and password.");
+        setError("Please enter both admin name and password.");
         return;
       }
 
@@ -57,8 +56,6 @@ const AdminLogin = () => {
       setSubmitting(false);
     }
   };
-
-  const credentials = getConfiguredAdminCredentials();
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4 py-12">
@@ -75,11 +72,11 @@ const AdminLogin = () => {
         <CardContent>
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-2">
-              <Label htmlFor="email">Admin Email</Label>
+              <Label htmlFor="email">Admin Name</Label>
               <Input
                 id="email"
-                type="email"
-                placeholder="admin@example.com"
+                type="text"
+                placeholder="Enter admin name"
                 autoComplete="username"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
@@ -105,10 +102,6 @@ const AdminLogin = () => {
             <Button type="submit" className="w-full" disabled={submitting}>
               {submitting ? "Signing in..." : "Sign in"}
             </Button>
-            <p className="text-xs text-muted-foreground text-center">
-              Current placeholder credentials: {credentials.email} / {credentials.password}. Update `VITE_ADMIN_EMAIL`
-              and `VITE_ADMIN_PASSWORD` in your environment file before deploying.
-            </p>
             <div className="text-center text-sm">
               <Link to="/" className="text-primary hover:underline">
                 Back to Home

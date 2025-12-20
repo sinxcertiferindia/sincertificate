@@ -46,7 +46,7 @@ const StudentCertificates = () => {
       if (email) params.append("email", email.trim());
       if (course) params.append("course", course.trim());
 
-      const { data } = await axios.get<CertificateRecord[]>(`${API_BASE_URL}/api/certificates/search?${params.toString()}`);
+      const { data } = await axios.get<CertificateRecord[]>(`${API_BASE_URL}/certificates/search?${params.toString()}`);
       setResults(data);
 
       if (data.length === 0) {

@@ -63,9 +63,9 @@ const AdminDashboard = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      // Only fetch from /api/certificates
-      // const statsResponse = axios.get(`${API_BASE_URL}/api/certificates/stats`); // Commented out - removed stats endpoint call
-      const certificatesResponse = await axios.get(`${API_BASE_URL}/api/certificates`);
+      // Only fetch from /certificates
+      // const statsResponse = axios.get(`${API_BASE_URL}/certificates/stats`); // Commented out - removed stats endpoint call
+      const certificatesResponse = await axios.get(`${API_BASE_URL}/certificates`);
 
       // Calculate stats from certificates data (before mapping)
       const certificatesData = certificatesResponse.data;

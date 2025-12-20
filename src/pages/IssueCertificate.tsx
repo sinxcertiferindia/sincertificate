@@ -60,7 +60,7 @@ const IssueCertificate = () => {
     try {
       // Send JSON using axios.post with Content-Type: application/json
       const response = await axios.post(
-        `${API_BASE_URL}/api/certificates`,
+        `${API_BASE_URL}/certificates`,
         certificateData,
         {
           headers: {
