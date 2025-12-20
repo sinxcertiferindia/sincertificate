@@ -11,7 +11,13 @@ const app = express();
 
 // Middleware order is critical: CORS first, then JSON parsing
 app.use(cors());
-app.use(express.json());
+// Configure JSON body parser with explicit options for serverless
+app.use(express.json({ 
+  limit: '10mb',
+  strict: true 
+}));
+// Also handle URL-encoded bodies (though we use JSON)
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 let cached = global.mongoose;
 if (!cached) {

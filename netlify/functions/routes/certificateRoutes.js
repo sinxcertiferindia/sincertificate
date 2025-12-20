@@ -28,6 +28,10 @@ const generateCertificateId = (batchName = "GEN") => {
  */
 router.post("/", async (req, res) => {
   try {
+    // Debug: Log request body to help diagnose issues
+    console.log("POST /certificates - Request body:", JSON.stringify(req.body));
+    console.log("POST /certificates - Content-Type:", req.get("Content-Type"));
+    
     const {
       recipientName,
       recipientEmail,
@@ -37,7 +41,7 @@ router.post("/", async (req, res) => {
       issueDate,
       expirationDate,
       additionalInfo,
-    } = req.body;
+    } = req.body || {};
 
     // ✅ Required field validation
     if (
@@ -50,6 +54,14 @@ router.post("/", async (req, res) => {
       return res.status(400).json({
         message:
           "Missing required fields: recipientName, recipientEmail, courseName, organizationName, and issueDate are required",
+        received: {
+          recipientName: !!recipientName,
+          recipientEmail: !!recipientEmail,
+          courseName: !!courseName,
+          organizationName: !!organizationName,
+          issueDate: !!issueDate,
+        },
+        bodyKeys: req.body ? Object.keys(req.body) : "req.body is undefined or null",
       });
     }
 
