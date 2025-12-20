@@ -41,7 +41,7 @@ app.use(async (req, res, next) => {
 });
 
 // ✅ Routes
-app.use("/api/certificates", certificateRoutes);
+app.use("/certificates", certificateRoutes);
 
 app.get("/", (req, res) => {
   res.send("API running on Netlify");
