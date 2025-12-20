@@ -29,7 +29,7 @@ async function connectDB() {
   return cached.conn;
 }
 
-// 🔐 ENSURE DB BEFORE EVERY REQUEST
+// ✅ Ensure DB before every request
 app.use(async (req, res, next) => {
   try {
     await connectDB();
@@ -40,12 +40,12 @@ app.use(async (req, res, next) => {
   }
 });
 
+// ✅ Routes
 app.use("/api/certificates", certificateRoutes);
 
 app.get("/", (req, res) => {
   res.send("API running on Netlify");
 });
 
-module.exports.handler = serverless(app, {
-  basePath: "/.netlify/functions/api",
-});
+// ❌ basePath REMOVE
+module.exports.handler = serverless(app);

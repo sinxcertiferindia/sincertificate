@@ -27,18 +27,38 @@ const IssueCertificate = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const certificateData = {
+    // Build plain JSON object from React state values
+    // Required fields: recipientName, recipientEmail, courseName, organizationName, issueDate
+    const certificateData: {
+      recipientName: string;
+      recipientEmail: string;
+      courseName: string;
+      organizationName: string;
+      issueDate: string;
+      batchName?: string;
+      expirationDate?: string;
+      additionalInfo?: string;
+    } = {
       recipientName,
       recipientEmail,
       courseName,
-      batchName: batchName || undefined,
       organizationName,
       issueDate,
-      expirationDate: expirationDate || undefined,
-      additionalInfo: additionalInfo || undefined,
     };
 
+    // Add optional fields only if they have values
+    if (batchName.trim()) {
+      certificateData.batchName = batchName;
+    }
+    if (expirationDate.trim()) {
+      certificateData.expirationDate = expirationDate;
+    }
+    if (additionalInfo.trim()) {
+      certificateData.additionalInfo = additionalInfo;
+    }
+
     try {
+      // Send JSON using axios.post with Content-Type: application/json
       const response = await axios.post(
         `${API_BASE_URL}/api/certificates`,
         certificateData,

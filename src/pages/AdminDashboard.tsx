@@ -63,46 +63,20 @@ const AdminDashboard = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const [statsResponse, certificatesResponse] = await Promise.all([
-        axios.get(`${API_BASE_URL}/api/certificates/stats`),
-        axios.get(`${API_BASE_URL}/api/certificates`),
-      ]);
+      // Only fetch from /api/certificates
+      // const statsResponse = axios.get(`${API_BASE_URL}/api/certificates/stats`); // Commented out - removed stats endpoint call
+      const certificatesResponse = await axios.get(`${API_BASE_URL}/api/certificates`);
 
-      // Update stats
-      const statsData = statsResponse.data;
-      setStats([
-        {
-          label: "Total Issued",
-          value: statsData.totalIssued.toLocaleString(),
-          icon: Award,
-          color: "text-primary",
-          bgColor: "bg-primary/10",
-        },
-        {
-          label: "Verified",
-          value: statsData.verified.toLocaleString(),
-          icon: CheckCircle2,
-          color: "text-accent",
-          bgColor: "bg-accent/10",
-        },
-        {
-          label: "Revoked",
-          value: statsData.revoked.toLocaleString(),
-          icon: XCircle,
-          color: "text-destructive",
-          bgColor: "bg-destructive/10",
-        },
-        {
-          label: "Views",
-          value: statsData.views.toLocaleString(),
-          icon: Eye,
-          color: "text-primary",
-          bgColor: "bg-primary/10",
-        },
-      ]);
+      // Calculate stats from certificates data (before mapping)
+      const certificatesData = certificatesResponse.data;
+      const totalIssued = certificatesData.length;
+      const verified = certificatesData.filter((cert: any) => cert.status === 'verified' || cert.status === 'active').length;
+      const revoked = certificatesData.filter((cert: any) => cert.status === 'revoked').length;
+      // Note: Views would need to be calculated from certificate data if available, otherwise default to 0
+      const views = certificatesData.reduce((sum: number, cert: any) => sum + (cert.views || 0), 0);
 
       // Update certificates
-      const certificates = certificatesResponse.data.map((cert: any) => ({
+      const certificates = certificatesData.map((cert: any) => ({
         id: cert.certificateId,
         recipient: cert.recipientName,
         course: cert.courseName,
@@ -110,6 +84,37 @@ const AdminDashboard = () => {
         status: cert.status || 'active',
       }));
       setRecentCertificates(certificates);
+
+      setStats([
+        {
+          label: "Total Issued",
+          value: totalIssued.toLocaleString(),
+          icon: Award,
+          color: "text-primary",
+          bgColor: "bg-primary/10",
+        },
+        {
+          label: "Verified",
+          value: verified.toLocaleString(),
+          icon: CheckCircle2,
+          color: "text-accent",
+          bgColor: "bg-accent/10",
+        },
+        {
+          label: "Revoked",
+          value: revoked.toLocaleString(),
+          icon: XCircle,
+          color: "text-destructive",
+          bgColor: "bg-destructive/10",
+        },
+        {
+          label: "Views",
+          value: views.toLocaleString(),
+          icon: Eye,
+          color: "text-primary",
+          bgColor: "bg-primary/10",
+        },
+      ]);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     } finally {
