@@ -44,6 +44,17 @@ async function connectDB() {
   return cached.conn;
 }
 
+// Path normalization middleware - strip Netlify function prefix
+app.use((req, res, next) => {
+  // Netlify passes full path like /.netlify/functions/api/certificates
+  // We need to strip /.netlify/functions/api to get /certificates
+  // Modify req.url (Express will recalculate req.path from req.url)
+  if (req.url.startsWith("/.netlify/functions/api")) {
+    req.url = req.url.replace("/.netlify/functions/api", "") || "/";
+  }
+  next();
+});
+
 // Ensure DB connection before every request
 app.use(async (req, res, next) => {
   try {
@@ -61,7 +72,6 @@ app.get("/", (req, res) => {
 });
 
 // Mount certificate routes
-// Netlify strips '/api' from path, so /.netlify/functions/api/certificates becomes /certificates
 app.use("/certificates", certificateRoutes);
 
 // 404 handler for unmatched routes
