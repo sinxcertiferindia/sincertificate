@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield, Award, CheckCircle2, QrCode, Download, Share2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import mainLogo from "../../Assests/mainlogo.jpeg";
+import sinLogo from "../../Assests/SIN.png";
 
 const Home = () => {
   return (
@@ -11,8 +13,12 @@ const Home = () => {
         <div className="container mx-auto max-w-6xl">
           <div className="text-center space-y-6">
             <div className="inline-block">
-              <div className="flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mx-auto mb-4">
-                <Award className="w-10 h-10 text-primary" />
+              <div className="flex items-center justify-center mx-auto mb-4">
+                <img 
+                  src={mainLogo} 
+                  alt="Company Logo" 
+                  className="h-24 w-auto object-contain"
+                />
               </div>
             </div>
             <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-foreground">
@@ -148,6 +154,22 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className="py-8 px-4 border-t bg-card">
+        <div className="container mx-auto max-w-6xl">
+          <div className="flex flex-col items-center justify-center gap-3">
+            <div className="flex items-center gap-3">
+              <span className="text-muted-foreground text-sm">Powered by</span>
+              <img 
+                src={sinLogo} 
+                alt="SIN Logo" 
+                className="h-8 w-auto object-contain"
+              />
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
